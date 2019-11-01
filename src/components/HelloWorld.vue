@@ -41,18 +41,19 @@
         <el-tree :data="listdata" node-key="id" :props="defaultProps" :expand-on-click-node="false">
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ data.applicationName || data.menuName }}</span>
-            <span v-if="data.btnName">
-              <el-button type="success" icon="el-icon-star-off" size="mini" plain>{{data.btnName}}</el-button>
+            <span v-if="data.authButtonVoList">
+              <span v-for="item in data.authButtonVoList" :key='item.id'>
+                <el-button type="success" icon="el-icon-star-off" size="mini" plain>{{item.btnName}}</el-button>
+              </span>
             </span>
-
             <el-button
-              v-if="data.menuName&&data.hasChild==0"
+              v-if="data.authButtonVoList"
               type="primary"
               icon="el-icon-plus"
-              @click="() => appendBtn(data)"
+              @click="() => appendBtnVeiw(data)"
               size="mini"
             >添加按钮</el-button>
-            <span v-if="data.applicationName|| data.menuName&&data.hasChild!=0">
+            <span v-else>
               <el-button
                 type="primary"
                 icon="el-icon-plus"
@@ -73,9 +74,9 @@
     <el-dialog title="添加按钮" :visible.sync="addBtnVisible" width="500px" center>
       <el-row>
         <el-col :span="6" v-for="item in addForm" :key="item.id" style="height:30px;">
-            <el-checkbox-group v-model="hasForm">
-              <el-checkbox  :label="item.btnName" >{{item.btnName}}</el-checkbox>
-            </el-checkbox-group>
+          <el-checkbox-group v-model="hasForm">
+            <el-checkbox :label="item.btnName">{{item.btnName}}</el-checkbox>
+          </el-checkbox-group>
         </el-col>
       </el-row>
       <span slot="footer" class="dialog-footer">
@@ -99,57 +100,59 @@ export default {
         applicationDesc: '',
         applicationUrl: '',
       },
-      addBtnVisible: true,
+      addBtnVisible: false,
       listdata: [],
       defaultProps: {
         children: 'childs',
       },
       hasForm: [],
-      addForm: [{
-        id: 'a',
-        btnName: '查看',
-        btnClazz: '0',
-      },
-      {
-        id: 'b',
-        btnName: '编辑',
-        btnClazz: '1',
-      },
-      {
-        id: 'c',
-        btnName: '保存',
-        btnClazz: '2',
-      },
-      {
-        id: 'd',
-        btnName: '删除',
-        btnClazz: '3',
-      },
-      {
-        id: 'e',
-        btnName: '列表搜索',
-        btnClazz: '4',
-      },
-      {
-        id: 'f',
-        btnName: '列表查询',
-        btnClazz: '5',
-      },
-      {
-        id: 'g',
-        btnName: '批量修改',
-        btnClazz: '6',
-      },
-      {
-        id: 'h',
-        btnName: '分配',
-        btnClazz: '7',
-      },
-      {
-        id: 'i',
-        btnName: '批量分配',
-        btnClazz: '8',
-      }],
+      addForm: [
+        {
+          id: 'a',
+          btnName: '查看',
+          btnClazz: '0',
+        },
+        {
+          id: 'b',
+          btnName: '编辑',
+          btnClazz: '1',
+        },
+        {
+          id: 'c',
+          btnName: '保存',
+          btnClazz: '2',
+        },
+        {
+          id: 'd',
+          btnName: '删除',
+          btnClazz: '3',
+        },
+        {
+          id: 'e',
+          btnName: '列表搜索',
+          btnClazz: '4',
+        },
+        {
+          id: 'f',
+          btnName: '列表查询',
+          btnClazz: '5',
+        },
+        {
+          id: 'g',
+          btnName: '批量修改',
+          btnClazz: '6',
+        },
+        {
+          id: 'h',
+          btnName: '分配',
+          btnClazz: '7',
+        },
+        {
+          id: 'i',
+          btnName: '批量分配',
+          btnClazz: '8',
+        },
+      ],
     };
   },
   mounted() {
@@ -218,6 +221,10 @@ export default {
     },
     resetForm(setTreeItem) {
       this.$refs[setTreeItem].resetFields();
+    },
+    appendBtnVeiw(data) {
+      console.log(data);
+      this.addBtnVisible = true;
     },
     // 添加按钮
     addBtn() {
