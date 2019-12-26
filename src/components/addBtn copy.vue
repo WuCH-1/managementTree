@@ -1,76 +1,54 @@
 <template>
   <div class="hello">
-    <el-row>
-      <el-col :span="8">
-        <el-form :model="setTreeItem" ref="setTreeItem" label-width="100px" class="demo-ruleForm">
-          <el-form-item
-            label="编码"
-            prop="applicationCode"
-            :rules="{ required: true, message: '编码不能为空'}"
-          >
-            <el-input type="text" v-model="setTreeItem.applicationCode" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item
-            label="名称"
-            prop="applicationName"
-            :rules="{ required: true, message: '名称不能为空'}"
-          >
-            <el-input type="text" v-model="setTreeItem.applicationName" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item
-            label="描述"
-            prop="applicationDesc"
-            :rules="{ required: true, message: '描述不能为空'}"
-          >
-            <el-input type="text" v-model="setTreeItem.applicationDesc" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item
-            label="Url"
-            prop="applicationUrl"
-            :rules="{ required: true, message: 'Url不能为空'}"
-          >
-            <el-input type="text" v-model="setTreeItem.applicationUrl" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm('setTreeItem')">添加系统</el-button>
-            <el-button @click="resetForm('setTreeItem')">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-      <el-col :span="14">
-        <el-tree :data="listdata" node-key="id" :props="defaultProps" :expand-on-click-node="false">
-          <span class="custom-tree-node" slot-scope="{ node, data }">
-            <span>{{ data.applicationName || data.menuName }}</span>
-            <span v-if="data.authButtonVoList">
-              <span v-for="item in data.authButtonVoList" :key='item.id'>
-                <el-button type="success" icon="el-icon-star-off" size="mini" plain>{{item.btnName}}</el-button>
-              </span>
-            </span>
-            <el-button
-              v-if="data.authButtonVoList"
-              type="primary"
-              icon="el-icon-plus"
-              @click="() => appendBtnVeiw(data)"
-              size="mini"
-            >添加按钮</el-button>
-            <span v-else>
-              <el-button
-                type="primary"
-                icon="el-icon-plus"
-                @click="() => append(data)"
-                size="mini"
-              >添加</el-button>
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                @click="() => addBtnVisible = true"
-                size="mini"
-              >删除</el-button>
-            </span>
-          </span>
-        </el-tree>
-      </el-col>
-    </el-row>
+    <el-table :data="tableData">
+        <el-table-column prop="date" label="日期" width="140">
+        </el-table-column>
+        <el-table-column prop="name" label="姓名" width="120">
+        </el-table-column>
+        <el-table-column prop="address" label="地址">
+        </el-table-column>
+        <el-table-column prop="address" label="地址">
+            <!-- <el-button>查看</el-button>
+            <el-button>新增</el-button> -->
+            <el-button>删除</el-button>
+        </el-table-column>
+    </el-table>
+    <el-dialog title="添加按钮" :visible.sync="addBtnVisible" width="500px" center>
+      <el-form :model="setTreeItem" ref="setTreeItem" label-width="100px" class="demo-ruleForm">
+        <el-form-item
+          label="编码"
+          prop="applicationCode"
+          :rules="{ required: true, message: '编码不能为空'}"
+        >
+          <el-input type="text" v-model="setTreeItem.applicationCode" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="名称"
+          prop="applicationName"
+          :rules="{ required: true, message: '名称不能为空'}"
+        >
+          <el-input type="text" v-model="setTreeItem.applicationName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="描述"
+          prop="applicationDesc"
+          :rules="{ required: true, message: '描述不能为空'}"
+        >
+          <el-input type="text" v-model="setTreeItem.applicationDesc" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="Url"
+          prop="applicationUrl"
+          :rules="{ required: true, message: 'Url不能为空'}"
+        >
+          <el-input type="text" v-model="setTreeItem.applicationUrl" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('setTreeItem')">添加系统</el-button>
+          <el-button @click="resetForm('setTreeItem')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <el-dialog title="添加按钮" :visible.sync="addBtnVisible" width="500px" center>
       <el-row>
         <el-col :span="6" v-for="item in addForm" :key="item.id" style="height:30px;">
@@ -92,7 +70,13 @@ import axios from '../utils';
 
 export default {
   data() {
+    const item = {
+      date: '2016-05-02',
+      name: '王小虎',
+      address: '上海市普陀区金沙江路 1518 弄',
+    };
     return {
+      tableData: Array(20).fill(item),
       id: 1000,
       setTreeItem: {
         applicationCode: '',
